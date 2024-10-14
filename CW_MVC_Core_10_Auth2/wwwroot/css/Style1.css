@@ -86,7 +86,7 @@ a {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.3), 0 0 300px 2px rgba(0, 123, 255, 0.6);
-    height: 70vh;
+    height: auto;
     overflow-y: auto;
     overflow-x: hidden;
     margin: 0 auto;

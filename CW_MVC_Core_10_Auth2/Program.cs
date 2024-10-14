@@ -3,9 +3,34 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using CW_MVC_Core_10_Auth2;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace Shop_app
 {
+    public class DynamicRoleRequirement : IAuthorizationRequirement
+    {
+        public string RoleName { get; }
+
+        public DynamicRoleRequirement(string roleName)
+        {
+            RoleName = roleName;
+        }
+    }
+
+    public class DynamicRoleHandler : AuthorizationHandler<DynamicRoleRequirement>
+    {
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, DynamicRoleRequirement requirement)
+        {
+            if (RolesModerator.Roles.Any(role => context.User.IsInRole(role)))
+            {
+                context.Succeed(requirement);
+            }
+
+            return Task.CompletedTask;
+        }
+    }
     public class Program
     {
         public static void Main(string[] args)
@@ -36,7 +61,19 @@ namespace Shop_app
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             builder.Services.AddRazorPages();
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole("admin"));
+            });
             var app = builder.Build();
+
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    await RoleInitializer.Initialize(services);
+            //}
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

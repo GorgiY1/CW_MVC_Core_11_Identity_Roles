@@ -26,25 +26,25 @@ namespace CW_MVC_Core_10_Auth2.Controllers
         public async Task<IActionResult> CreateRole(string roleName)
         {
             if (string.IsNullOrEmpty(roleName))
-            { 
-                return BadRequest("Role name is important");
+            {
+                return BadRequest("Role name is important ...");
             }
             var roleExists = await _roleManager.RoleExistsAsync(roleName);
             if (roleExists)
             {
-                return BadRequest("Role already exists");
+                return BadRequest("Role already exists ...");
             }
-            var role = new IdentityRole { Name = roleName };
-            var result = await _roleManager.CreateAsync(role);
             if (User.Identity.IsAuthenticated)
             {
-
+                var role = new IdentityRole { Name = roleName };
+                var result = await _roleManager.CreateAsync(role);
+                if (result.Succeeded)
+                {
+                    return Ok($"The role: {role.Name} is created ...");
+                }
+                return BadRequest(Json(result.Errors));
             }
-            if (result.Succeeded)
-            {
-                return Ok($"The role: {role.Name} is created");
-            }
-            return BadRequest(Json(result.Errors));
+            return BadRequest("Role create error ...");
         }
         [HttpGet]
         public IActionResult Create()
@@ -108,5 +108,41 @@ namespace CW_MVC_Core_10_Auth2.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public IActionResult AssignRole()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(string id, string roleName)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(roleName))
+            {
+                return BadRequest("Id or Name Role are require");
+            }
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var roleExist = await _roleManager.RoleExistsAsync(roleName);
+
+            if (!roleExist)
+            {
+                return NotFound($"The role {roleName} not found");
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return BadRequest(Json(result.Errors));
+        }
+
     }
 }

@@ -22,14 +22,34 @@
                 <form asp-action="Logout" asp-controller="User" method="post">
                     <button type="submit">LogOut</button>
                 </form>
+
+                <div class="menu">
+                    <a href="/">Home</a>
+                    <a asp-controller="User" asp-action="Create">Create New</a>
+                    <a asp-controller="User" asp-action="LogIn">LogIn</a>
+                    <a asp-controller="User" asp-action="CreateRole">Create Role</a>
+                </div>
+
+                
+        <!-- Card for Products -->
+
+                <div class="menu">
+                    <h1>Products</h1>
+                    <a class="menu" asp-controller="Products" asp-action="Index">List of Products</a>
+
+                    <a class="menu" asp-controller="Products" asp-action="Create">Create New Product</a>
+
+                    <a class="menu" asp-controller="Products" asp-action="Update">Update Product</a>
+
+                    <a class="menu" asp-controller="Products" asp-action="Delete">Delete Product</a>
+                </div>
             }
-            else
+            else 
             {
                 <div class="menu">
                     <a href="/" >Home</a>
-                    <a href="/User/Create" >Create New</a>
-                    <a href="/User/LogIn" >LogIn</a>
-                    <a href="/User/CreateRole">Create Role</a>
+                    <a asp-controller="User" asp-action="Create" >Create New</a>
+                    <a asp-controller="User" asp-action="LogIn">LogIn</a>
                 </div>
             }
             
