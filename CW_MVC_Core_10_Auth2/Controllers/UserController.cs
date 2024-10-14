@@ -20,7 +20,6 @@ namespace CW_MVC_Core_10_Auth2.Controllers
         [HttpGet]
         public IActionResult CreateRole()
         {
-            int testvar = 0;
             return View();
         }
         [HttpPost]
